@@ -1,5 +1,5 @@
 require 'simplecov'
-SimpleCov.start do
+SimpleCov.start 'rails' do
   enable_coverage :branch
 end
 
@@ -9,7 +9,8 @@ require 'rails/test_help'
 
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers
-  parallelize(workers: :number_of_processors)
+  parallelize(workers: 1)
+  # parallelize(workers: :number_of_processors)
 
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
