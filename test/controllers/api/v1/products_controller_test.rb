@@ -32,6 +32,21 @@ class Api::V1::ProductsControllerTest < ActionDispatch::IntegrationTest
     assert_response :created
   end
 
+  test 'should not create product with invalid data' do
+    assert_no_difference('Product.count') do
+      post api_v1_products_url, params: {
+        product: {
+          title: nil,
+          price: @product.price,
+          published: @product.published
+        }
+      }, headers: {
+        Authorization: JsonWebToken.encode(user_id: @product.user_id)
+      }, as: :json
+    end
+    assert_response :unprocessable_entity
+  end
+
   test 'should forbid create product' do
     assert_no_difference('Product.count') do
       post api_v1_products_url, params: {
@@ -62,9 +77,20 @@ class Api::V1::ProductsControllerTest < ActionDispatch::IntegrationTest
         title: nil
       }
     }, headers: {
-      Authorization: JsonWebToken.encode(user_id: users(:one).id)
+      Authorization: JsonWebToken.encode(user_id: @product.user_id)
     }, as: :json
     assert_response :unprocessable_entity
+  end
+
+  test 'should forbid update product when no current_user' do
+    patch api_v1_product_url(@product), params: {
+      product: {
+        title: @product.title
+      }
+    }, headers: {
+      Authorization: nil
+    }, as: :json
+    assert_response :forbidden
   end
 
   test 'should forbid update product' do

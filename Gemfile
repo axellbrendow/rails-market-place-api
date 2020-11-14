@@ -47,3 +47,5 @@ gem "bcrypt", "~> 3.1"
 gem "jwt", "~> 2.2"
 
 gem "faker", "~> 2.14"
+
+gem "fast_jsonapi", "~> 1.5"
