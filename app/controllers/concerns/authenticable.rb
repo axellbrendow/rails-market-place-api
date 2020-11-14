@@ -14,4 +14,10 @@ module Authenticable
       @current_user = nil
     end
   end
+
+  protected
+
+  def check_login
+    head :forbidden unless current_user
+  end
 end
