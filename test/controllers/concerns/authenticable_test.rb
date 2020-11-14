@@ -26,4 +26,9 @@ class AuthenticableTest < ActionDispatch::IntegrationTest
     @authentication.request.headers['Authorization'] = nil
     assert_nil @authentication.current_user
   end
+
+  test 'should not get user from Authorization token if user does not exist' do
+    @authentication.request.headers['Authorization'] = JsonWebToken.encode(user_id: 0)
+    assert_nil @authentication.current_user
+  end
 end
