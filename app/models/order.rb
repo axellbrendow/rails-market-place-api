@@ -26,7 +26,6 @@ class Order < ApplicationRecord
         product_id: product_id_and_quantity[:product_id],
         quantity: product_id_and_quantity[:quantity]
       )
-      yield placement if block_given?
     end
   end
 end
