@@ -12,10 +12,13 @@ class Order < ApplicationRecord
   before_validation :set_total!
 
   def set_total!
-    self.total = products.map(&:price).sum
+    self.total = placements.map do |placement|
+      placement.product.price * placement.quantity
+    end.sum
   end
 
-  # @param product_ids_and_quantities [Array<Hash>] something like this `[{product_id: 1, quantity: 2}]`
+  # @param product_ids_and_quantities [Array<Hash>] something like this
+  #  `[{product_id: 1, quantity: 2}]`
   # @yield [Placement] placements build
   def build_placements_with_product_ids_and_quantities(product_ids_and_quantities)
     product_ids_and_quantities.each do |product_id_and_quantity|
