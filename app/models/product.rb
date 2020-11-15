@@ -5,4 +5,8 @@ class Product < ApplicationRecord
   }, presence: true
 
   belongs_to :user
+
+  scope :filter_by_title, lambda { |keyword|
+    where('lower(title) LIKE ?', "%#{keyword.downcase}%")
+  }
 end
