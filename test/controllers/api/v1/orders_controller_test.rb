@@ -35,6 +35,13 @@ class Api::V1::OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_equal @order.products.first.title, include_product_attr['title']
   end
 
+  test 'should return 404 not found when user has no orders' do
+    get api_v1_order_url(@order), headers: {
+      Authorization: JsonWebToken.encode(user_id: users(:three).id)
+    }, as: :json
+    assert_response :not_found
+  end
+
   test 'should forbid create order for unlogged' do
     assert_no_difference('Order.count') do
       post api_v1_orders_url, params: @order_params, as: :json

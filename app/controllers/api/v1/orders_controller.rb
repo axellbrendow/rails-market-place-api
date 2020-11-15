@@ -7,28 +7,28 @@ class Api::V1::OrdersController < ApplicationController
 
   def show
     order = current_user.orders.find(params[:id])
-
-    if order
-      options = { include: [:products] }
-      render json: OrderSerializer.new(order, options).serializable_hash
-    else
-      head 404
-    end
+    options = { include: [:products] }
+    render json: OrderSerializer.new(order, options).serializable_hash
+  rescue ActiveRecord::RecordNotFound
+    head :not_found
   end
 
   def create
     order = current_user.orders.build(order_params)
 
-    if order.save
-      render json: order, status: :created
-    else
-      render json: { errors: order.errors }, status: :unprocessable_entity
-    end
+    # if order.save
+    order.save
+    OrderMailer.send_confirmation(order).deliver
+    render json: order, status: :created
+    # else
+    #   render json: { errors: order.errors }, status: :unprocessable_entity
+    # end
   end
 
   private
 
   def order_params
-    params.require(:order).permit(:total, product_ids: [])
+    # params.require(:order).require(:product_ids)
+    params.require(:order).permit(:product_ids)
   end
 end
